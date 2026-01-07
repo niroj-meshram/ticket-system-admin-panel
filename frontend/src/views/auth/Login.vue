@@ -2,9 +2,12 @@
   import { useForm,useField } from 'vee-validate';  
   import * as yup from 'yup';
   import { useAuthStore } from '@/stores/auth';
+  import { useRouter } from 'vue-router';
+  import { useToast } from 'vue-toastification';
 
-
+  const router = useRouter();
   const auth = useAuthStore();
+  const toast = useToast();
 
   //Validation schema
   const schema = yup.object({
@@ -13,7 +16,7 @@
   })
 
   // setup form
-  const {handleSubmit} = useForm({
+  const {handleSubmit, setErrors} = useForm({
     validationSchema : schema
   })
 
@@ -21,10 +24,18 @@
   const { value: email , errorMessage:emailError } = useField('email')
   const { value : password, errorMessage : passwordError} = useField('password');
 
-// submit
-  const onSubmit = handleSubmit( value => {
-    auth.login(value);
-  })
+  const onSubmit = handleSubmit(async (value) => {
+    try {
+        await auth.login(value)
+        router.push('/')
+    } catch (error) {
+        if (error?.response?.status === 422) {
+            setErrors(error.response.data.errors)
+        }else{
+            toast.error('Something went wrong, Please try again');
+        }
+    }
+})
 </script>
 
 <template>

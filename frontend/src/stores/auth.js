@@ -6,16 +6,28 @@ export const useAuthStore = defineStore('auth', () => {
     const user = ref(JSON.parse(localStorage.getItem('user')))
     const token = ref(localStorage.getItem('token'))
     const loading = ref(false);
+    const error = ref(null)
 
-    const isUserAuthenticated = computed( ()=> !! token.value)
+    const isUserAuthenticated = computed( () => !! token.value)
 
     const login = async( credentials ) => {
-        const res = await loginApi(credentials);
-        token.value = res.data.data.token;
-        user.value = res.data.data.user;
+        loading.value = true;
+        error.value = null;
+        try {
+            const res = await loginApi(credentials);
+            token.value = res.data.data.token;
+            user.value = res.data.data.user;
 
-        localStorage.setItem('token', token.value);
-        localStorage.setItem('user', JSON.stringify(user.value));
+            localStorage.setItem('token', token.value);
+            localStorage.setItem('user', JSON.stringify(user.value));
+            console.log("colll",res)
+            return res;
+        } catch (err) {
+            error.value = err.response?.data?.message || 'Login failed'
+            throw err 
+        } finally {
+            loading.value = false
+        }  
 
     }
 
@@ -31,15 +43,29 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     const create = async(data) => {
-
         try {
-            const res = await registerApi(data);
-            console.log(res.data)
+            return await registerApi(data);
         } catch (error) {
            console.log("Error occurred", error) 
+           throw error;
         }
-    
     }
+
+    const logout = async() =>{
+        try {
+           const res = await logoutApi();
+           token.value = null;
+           user.value = null;
+
+           localStorage.setItem('token', null);
+           localStorage.setItem('user', null);
+           console.log("Token and uswr set to null",isUserAuthenticated.value)
+        } catch (error) {
+            throw error;
+        }
+    }
+
+
 
 
     return {
@@ -48,6 +74,7 @@ export const useAuthStore = defineStore('auth', () => {
         login,
         fetchUser,
         create,
+        logout,
         loading,
         isUserAuthenticated
     }

@@ -27,7 +27,7 @@ class UserController extends Controller
  
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'success',
+                'status' => 'error',
                 'errors' => $validator->errors()
             ],422);
         }
@@ -80,10 +80,10 @@ class UserController extends Controller
 
     public function logout(Request $request)
     {
+        
         $request->user()->currentAccessToken()->delete();
-
-        return response()->json([
-            'message' => 'Logged out successfully!',
-        ]);
+         return ApiResponse::success(
+            'User logged out successfully',
+        );
     }
 }

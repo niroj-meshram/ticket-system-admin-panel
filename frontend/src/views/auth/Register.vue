@@ -2,8 +2,13 @@
 import { useForm,useField } from 'vee-validate';
 import * as yup from 'yup';
 import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification'
 
+
+const toast = useToast()
 const auth = useAuthStore();
+const router = useRouter();
 
 
 // schema
@@ -17,7 +22,7 @@ const schema = yup.object({
 })
 
 //setup
-const { handleSubmit } = useForm({
+const { handleSubmit,setErrors } = useForm({
     validationSchema :schema
 })
 
@@ -28,8 +33,19 @@ const { value : firstName, errorMessage: firstNameError} = useField('firstName')
 const { value : lastName, errorMessage: lastNameError} = useField('lastName')
 const { value : password_confirmation, errorMessage: password_confirmationError} = useField('password_confirmation')
 
-const onSubmit = handleSubmit( values => {
-    auth.create(values);
+const onSubmit = handleSubmit( async (values) => {
+    try {
+       const res = await auth.create(values);
+       console.log(res)
+       router.push('/login');
+
+    } catch (error) {
+        if (error.response?.status === 422) {
+          setErrors(error.response.data.errors)
+        }else{
+            toast.error('Something went wrong. Please try again.')
+        }
+    }
 })
 </script>
 <template>
@@ -41,7 +57,7 @@ const onSubmit = handleSubmit( values => {
                 <!-- Header -->
                 <div class="auth-bg px-6 py-8 text-center">
                     <div class="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full backdrop-blur-sm">
-                        <i class="fas fa-user-plus text-white text-2xl"></i>
+                       <font-awesome-icon icon="user-plus"  class="p-3 text-white text-2xl"/>
                     </div>
                     <h1 class="mt-4 text-3xl font-bold text-white">Create Account</h1>
                     <p class="mt-2 text-white/90">Join our admin platform</p>

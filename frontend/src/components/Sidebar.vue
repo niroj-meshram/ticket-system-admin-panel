@@ -20,10 +20,10 @@
                         </RouterLink>
                     </li>
                     <li class="mb-2">
-                        <RouterLink to="/user" id="users-link" class="flex items-center p-4  transition-colors" 
-                        active-class="bg-primary">
-                            <font-awesome-icon icon="user" class="px-2"/>
-                            User Management
+                        <RouterLink to="/ticket" id="users-link" class="flex items-center p-4  transition-colors" 
+                       >
+                            <font-awesome-icon icon="ticket" class="px-2"/>
+                            Ticket Management
                         </RouterLink>
                     </li>
                    
