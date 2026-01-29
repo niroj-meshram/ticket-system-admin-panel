@@ -13,8 +13,12 @@ class TicketController extends Controller
 {
   
     public function index() {
-        $ticket = Ticket::all();
-        dd($ticket);
+        $tickets = Ticket::all();
+        return ApiResponse::success(
+            'Ticket fetched successfully',
+            $tickets,
+            200
+        );
     }
 
     public function store(Request $request) 
