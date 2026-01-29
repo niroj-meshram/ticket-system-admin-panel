@@ -59,7 +59,7 @@ export const useAuthStore = defineStore('auth', () => {
 
            localStorage.setItem('token', null);
            localStorage.setItem('user', null);
-           console.log("Token and uswr set to null",isUserAuthenticated.value)
+           console.log("Token and uswr set to null", isUserAuthenticated.value)
         } catch (error) {
             throw error;
         }

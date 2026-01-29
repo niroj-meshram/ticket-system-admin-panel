@@ -4,9 +4,8 @@
  import { useForm, useField } from 'vee-validate';
 
  const schema = yup.object({
-    title : yup.string().required(),
-    slug : yup.string().required(),
-    description : yup.string().required(),
+    title : yup.string().required("Title is required"),
+    description : yup.string().required("Description is required"),
     image : yup.mixed().required("Image is required"),
  })
 
@@ -15,12 +14,11 @@
  })
 
  const { value : title, errorMessage : titleError} = useField('title')
- const { value : slug, errorMessage : slugError} = useField('slug')
  const { value : decription, errorMessage : descriptionError} = useField('description')
  const { value : image, errorMessage : imageError} = useField('image')
 
  const onSubmit = handleSubmit ((values)=>{
-    console.log(values)
+    
  })
 
  const imagePreview = ref('')
@@ -78,33 +76,6 @@ const removeImage = () => {
                     <p class="text-red-500 text-sm">{{ titleError }}</p>
 
                 </div>
-
-                <!-- Slug Field -->
-                <div class="mb-6">
-                    <label for="slug" class="block text-sm font-medium text-gray-700 mb-2">
-                        <span class="flex items-center">
-                            <i class="fas fa-link mr-2 text-green-500"></i>
-                            URL Slug *
-                        </span>
-                    </label>
-                    <div class="flex">
-                        <span class="inline-flex items-center px-4 py-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500">
-                            https://example.com/
-                        </span>
-                        <input 
-                            type="text" 
-                            id="slug" 
-                            name="slug"
-                            v-model="slug"
-                            placeholder="url-friendly-slug"
-                            class="slug-input flex-grow px-4 py-3 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200"
-                        >
-                    </div>
-                    <p class="text-red-500 text-sm">{{ slugError }}</p>
-
-                    
-                </div>
-
                 <!-- Description Field -->
                 <div class="mb-6">
                     <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
@@ -116,7 +87,7 @@ const removeImage = () => {
                     <textarea 
                         id="description" 
                         name="description"
-                        rows="5"
+                        rows="10"
                         v-model="decription"
                         placeholder="Provide a detailed description of your content..."
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200"
@@ -127,7 +98,7 @@ const removeImage = () => {
 
                 <!-- Image Upload Field -->
                 <div class="mb-8">
-                    <input type="file" accept="image/*" id="image" v-model="image" 
+                    <input type="file" accept="image/*" id="image" v-on="image" 
                     class="bg-gray-200 w-100 rounded p-2 block"
                     @change="handleImageChange"
                     />
