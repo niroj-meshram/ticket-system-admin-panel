@@ -2,6 +2,14 @@
  import * as yup from 'yup'
  import { ref } from 'vue';
  import { useForm, useField } from 'vee-validate';
+ import {useTicketStore} from '@/stores/ticket'
+ import { useRouter } from 'vue-router';
+
+ const ticket = useTicketStore();
+ const router = useRouter();
+ 
+ 
+ 
 
  const schema = yup.object({
     title : yup.string().required("Title is required"),
@@ -17,8 +25,16 @@
  const { value : decription, errorMessage : descriptionError} = useField('description')
  const { value : image, errorMessage : imageError} = useField('image')
 
- const onSubmit = handleSubmit ((values)=>{
-    
+ const onSubmit = handleSubmit ( async (values)=>{
+    try {
+        const res = await ticket.create(values)
+        if(res.data.status=="success"){
+            router.push('/ticket')
+        }
+        console.log("Api response",res);
+    } catch (error) {
+        console.log(error)
+    }
  })
 
  const imagePreview = ref('')
@@ -103,6 +119,8 @@ const removeImage = () => {
                     @change="handleImageChange"
                     />
                 </div> 
+                <p class="text-red-500 text-sm">{{ imageError }}</p>
+
                 <div v-if="imagePreview" class="mb-2">
                     <img :src="imagePreview" class="max-h-40 rounded" />
                     <button 
@@ -112,6 +130,7 @@ const removeImage = () => {
                         >
                     Remove
                     </button>
+
                 </div>
 
                 <!-- Form Actions -->

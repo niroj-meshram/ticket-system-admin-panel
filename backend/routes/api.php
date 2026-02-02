@@ -14,3 +14,4 @@ Route::get('me', [UserController::class,'user'])->middleware('auth:sanctum');
 
 Route::get('tickets',[TicketController::class, 'index']);
 Route::post('create-ticket',[TicketController::class, 'store']);
+Route::delete('ticket/{id}',[TicketController::class, 'deleteTicket']);

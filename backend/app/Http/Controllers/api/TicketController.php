@@ -46,4 +46,16 @@ class TicketController extends Controller
             201
         );
     }
+
+    public function deleteTicket($id){
+        try {
+            $ticket = Ticket::findOrFail($id);
+            $ticket->delete();
+            return ApiResponse::success(
+            'Ticket deleted successfully',
+            $ticket );
+        } catch(\Exeception $e){
+
+        }
+    }
 }
